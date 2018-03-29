@@ -1,0 +1,15 @@
+---
+- name: Clean up config
+  hosts: kafka_broker_nodes
+  become: true
+  vars_files: 
+    - ./roles/kafka/vars/main.yml
+  tasks:
+    - name: Clean up jdk
+      file: state=absent path={{java_name}}
+
+    - name: Clean up kafka
+      file: state=absent path={{kafka_name}}
+
+    - name: Clean up zookeeper data
+      file: state=absent path={{zookeeper_data_dir}}

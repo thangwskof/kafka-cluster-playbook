@@ -1,0 +1,22 @@
+---
+server_urls: "{{ groups['kafka_broker_nodes'] | map('extract', hostvars, ['ansible_host']) | list }}"
+zookeeper_connect_servers: "{{ groups['kafka_broker_nodes'] | map('extract', hostvars, ['ansible_host']) | join(':2181,') }}:2181"
+
+bootstrap_servers: "{{ groups['kafka_broker_nodes'] | map('extract', hostvars, ['ansible_host']) | join(':9092,') }}:9092"
+kafkastore_zookeeper_url: "{{ groups['kafka_broker_nodes'] | map('extract', hostvars, ['ansible_host']) | join(':2181,') }}:2181"
+
+
+
+repo_server: "192.168.1.200"
+download_url: http://{{repo_server}}/jdk-8u161-linux-x64.tar.gz
+download_folder: /opt
+java_name: "{{download_folder}}/jdk1.8.0_161"
+java_archive: "{{download_folder}}/jdk-8u161-linux-x64.tar.gz"
+
+
+download_kafka_url: http://{{repo_server}}/kafka_2.11-0.10.2.0.tgz
+kafka_name: "{{download_folder}}/kafka_2.11-0.10.2.0"
+kafka_archive: "{{download_folder}}/kafka_2.11-0.10.2.0.tgz"
+kafka_log_dir: "{{kafka_name}}/kafka_data"
+kafka_conf: "{{kafka_name}}/config"
+zookeeper_data_dir: "{{download_folder}}/zookeeper"

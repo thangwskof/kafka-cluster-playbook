@@ -1,0 +1,4 @@
+---
+- name: be sure WGET is installed
+  yum: name=wget state=latest
+  environment: "{{proxy_env}}"

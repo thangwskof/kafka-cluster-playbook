@@ -1,0 +1,62 @@
+---
+- import_tasks: common_tool.yml
+- import_tasks: java.yml
+  when: java_install
+- import_tasks: register_vars.yml
+
+- iptables:
+   chain: INPUT
+   protocol: all
+   action: insert
+   jump: ACCEPT
+   source: 172.27.11.0/24
+  become: yes
+
+- name: Download Kafka
+  get_url: url={{download_kafka_url}} dest={{kafka_archive}} mode=0644 force=no
+
+- name: Unpack archive kafka
+  unarchive: copy=no src={{kafka_archive}} dest={{download_folder}}
+
+- name: Creates kafka data cluster directories
+  file: 
+    path: "{{ kafka_log_dir }}"
+    state: directory
+
+- name: Fix ownership
+  file: state=directory path={{kafka_name}} owner=root group=root recurse=yes
+
+- name: Clean up
+  file: state=absent path={{kafka_archive}}
+
+
+- name: Configure server.properties
+  template:
+    src: server.properties.j2
+    dest: "{{ kafka_conf }}/server.properties"
+
+- name: Configure zookeeper.properties
+  template:
+    src: zookeeper.properties.j2
+    dest: "{{ kafka_conf }}/zookeeper.properties"
+
+- name: Creates zookeeper cluster directories
+  file: 
+    path: "{{ zookeeper_data_dir }}"
+    state: directory
+
+- name: Configure zookeeper myid
+  template:
+    src: myid.j2
+    dest: "{{ zookeeper_data_dir}}/myid"
+
+- name: Start zookeeper server
+  shell: "{{ kafka_name }}/bin/zookeeper-server-start.sh -daemon {{ kafka_name }}/config/zookeeper.properties"
+  register: result
+
+- name: Start kafka cluster
+  shell: "{{ kafka_name }}/bin/kafka-server-start.sh -daemon {{ kafka_name }}/config/server.properties"
+  register: result
+
+- debug: msg="{{ result.stdout }}"
+- debug: msg="{{ result.stderr }}"

@@ -1,0 +1,4 @@
+---
+# file: host_vars/kafka02
+broker_id: 2
+zookeeper_id: 2
