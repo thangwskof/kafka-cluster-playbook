@@ -12,7 +12,7 @@ The playbook only contains one role, basically this roles will install and confi
 * Apache Kafka
 * Java JDK
 
-### Contribution guidelines ###
+### Configrure ###
 * Configure IP server to hosts file
 * Configure repo download, link download jdk, apache kafka to the /roles/vars/main.yml
 
