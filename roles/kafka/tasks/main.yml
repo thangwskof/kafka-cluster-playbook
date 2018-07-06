@@ -9,7 +9,7 @@
    protocol: all
    action: insert
    jump: ACCEPT
-   source: 172.27.11.0/24
+   source: 192.168.1.0/24
   become: yes
 
 - name: Download Kafka
